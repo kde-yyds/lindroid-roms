@@ -1,0 +1,45 @@
+From 06aae8350e09d2c9335f6dc293d8c722069fe5bf Mon Sep 17 00:00:00 2001
+From: HeCheng Yu <kde-yyds@qq.com>
+Date: Fri, 30 Aug 2024 21:56:12 +0800
+Subject: [PATCH] mount /dev/dma_heap instead of /dev/ion, also mount /sdcard
+ /storage /data
+
+---
+ lxc/template.sh | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/lxc/template.sh b/lxc/template.sh
+index d53b47c..b59c4a0 100755
+--- a/lxc/template.sh
++++ b/lxc/template.sh
+@@ -360,7 +360,9 @@ add_base_config() {
+ lxc.net.0.type = none
+ 
+ # Android mounts
+-lxc.mount.entry = /sdcard mnt/sdcard none bind,optional,rw,create=dir
++lxc.mount.entry = /sdcard /sdcard none bind,optional,rw,create=dir
++lxc.mount.entry = /storage /storage none bind,optional,rw,create=dir
++lxc.mount.entry = /data /data none bind,optional,rw,create=dir
+ 
+ # Allow for 1024 pseudo terminals
+ lxc.pty.max = 1024
+@@ -416,7 +418,7 @@ lxc.mount.entry = /dev/hwbinder dev/hwbinder none bind,optional,rw,create=file
+ lxc.mount.entry = /dev/vndbinder dev/vndbinder none bind,optional,rw,create=file
+ lxc.mount.entry = /dev/pmsg0 dev/pmsg0 none bind,optional,rw,create=file
+ lxc.mount.entry = /dev/ashmem dev/ashmem none bind,optional,rw,create=file
+-lxc.mount.entry = /dev/ion dev/ion none bind,optional,create=file
++lxc.mount.entry = /dev/dma_heap dev/dma_heap none rbind,optional,rw,create=dir
+ lxc.mount.entry = /dev/input dev/input none rbind,optional,rw,create=dir
+ lxc.mount.entry = /dev/tty0 dev/tty0 none bind,optional,rw,create=file
+ lxc.mount.entry = /dev/tty1 dev/tty1 none bind,optional,rw,create=file
+@@ -437,7 +439,6 @@ lxc.mount.entry = /data/lindroid/mnt lindroid bind bind,create=dir,optional 0 0
+ 
+ # GPU devices
+ lxc.mount.entry = /dev/kgsl-3d0 dev/kgsl-3d0 none bind,optional,create=file
+-lxc.mount.entry = /dev/mali0 dev/mali0 none bind,optional,create=file
+ # -- static Lindroid configuration ends here --
+ EOF
+ }
+-- 
+2.46.0
+
