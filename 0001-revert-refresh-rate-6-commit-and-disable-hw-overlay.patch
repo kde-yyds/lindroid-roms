@@ -1,0 +1,45 @@
+From 58607c80e890b5ce8b1fd868ecfece9a0cb9b1c7 Mon Sep 17 00:00:00 2001
+From: HeCheng Yu <kde-yyds@qq.com>
+Date: Fri, 30 Aug 2024 20:05:29 +0800
+Subject: [PATCH] revert refresh rate -6 commit and disable hw overlay when
+ starting perspectived service
+
+---
+ app/app/src/main/java/org/lindroid/ui/DisplayActivity.java | 2 +-
+ perspectived/PerspectiveService.cpp                        | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+ mode change 100644 => 100755 app/app/src/main/java/org/lindroid/ui/DisplayActivity.java
+ mode change 100644 => 100755 perspectived/PerspectiveService.cpp
+
+diff --git a/app/app/src/main/java/org/lindroid/ui/DisplayActivity.java b/app/app/src/main/java/org/lindroid/ui/DisplayActivity.java
+old mode 100644
+new mode 100755
+index fdc7769..fcc7f9e
+--- a/app/app/src/main/java/org/lindroid/ui/DisplayActivity.java
++++ b/app/app/src/main/java/org/lindroid/ui/DisplayActivity.java
+@@ -226,7 +226,7 @@ public class DisplayActivity extends AppCompatActivity implements SurfaceHolder.
+             } catch (Exception e) {
+                 Log.e(TAG, "Failed to get display refresh rate", e);
+             }
+-            nativeSurfaceChanged(mDisplayID, surface, getResources().getConfiguration().densityDpi, refresh - 6);
++            nativeSurfaceChanged(mDisplayID, surface, getResources().getConfiguration().densityDpi, refresh);
+             if (mPreviousWidth != w || mPreviousHeight != h) {
+                 nativeReconfigureInputDevice(mDisplayID, w, h);
+                 mPreviousWidth = w;
+diff --git a/perspectived/PerspectiveService.cpp b/perspectived/PerspectiveService.cpp
+old mode 100644
+new mode 100755
+index 73362b9..0e73649
+--- a/perspectived/PerspectiveService.cpp
++++ b/perspectived/PerspectiveService.cpp
+@@ -32,6 +32,7 @@ using aidl::vendor::lindroid::perspective::LXCContainerManager;
+ 
+ int main(void) {
+     umask(0000);
++    system("/system/bin/service call SurfaceFlinger 1008 i32 1");
+     auto perspective = ndk::SharedRefBase::make<LXCContainerManager>();
+ 
+     binder_status_t status = AServiceManager_addService(perspective->asBinder().get(), SERVICE_NAME);
+-- 
+2.46.0
+
