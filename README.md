@@ -5,7 +5,7 @@
 # 2024/08-29
 ## Upload Matrixx
 # 2024/08-30
-## Upload GKI without KernelSu  
+## Upload GKI without KernelSU  
 ## Upload RisingOS
 Note that starting from this RisingOS build, SELinux and hw overlay are disabled with some HACK to make lindroid work by default.  
 Please also view patches below
